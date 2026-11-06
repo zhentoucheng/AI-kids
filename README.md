@@ -1,6 +1,6 @@
 <div align="center">
 
-# 家庭 AI 管家 · keke & kaoguan
+# AI 带娃 · keke & kaoguan
 
 **客厅里那台音箱，会自己开口。**
 
@@ -88,8 +88,8 @@
 ### 跑起来
 
 ```bash
-git clone https://github.com/zhentoucheng/home-ai-steward.git
-cd home-ai-steward
+git clone https://github.com/zhentoucheng/AI%E5%B8%A6%E5%A8%83.git
+cd AI带娃
 
 cp keke/config.example.yaml keke/config.yaml
 cp kaoguan/config.example.yaml kaoguan/config.yaml
@@ -237,7 +237,7 @@ docker exec kaoguan python kaoguan.py --list-words
 ## 目录结构
 
 ```
-home-ai-steward/
+AI带娃/
 ├── keke/                 管家
 │   ├── keke.py           单文件，无框架依赖
 │   └── config.example.yaml
