@@ -88,8 +88,8 @@
 ### 跑起来
 
 ```bash
-git clone https://github.com/zhentoucheng/AI%E5%B8%A6%E5%A8%83.git
-cd AI带娃
+git clone https://github.com/zhentoucheng/ai-kids.git
+cd ai-kids
 
 cp keke/config.example.yaml keke/config.yaml
 cp kaoguan/config.example.yaml kaoguan/config.yaml
@@ -237,7 +237,7 @@ docker exec kaoguan python kaoguan.py --list-words
 ## 目录结构
 
 ```
-AI带娃/
+ai-kids/
 ├── keke/                 管家
 │   ├── keke.py           单文件，无框架依赖
 │   └── config.example.yaml
