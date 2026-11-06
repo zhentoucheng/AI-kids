@@ -220,8 +220,16 @@ def deep_merge(a, b):
 
 def load_cfg(path):
     if not path or not os.path.exists(path):
-        log.warning("配置文件不存在：%s → 用默认值（多半跑不起来，密钥都在配置里）", path)
-        return dict(DEFAULT_CFG)
+        # 不要静默退到默认值：配置里有 HA 地址和令牌，缺了必然连不上，
+        # 与其让容器起来后刷一堆超时日志，不如在这里停下并说清楚怎么修。
+        log.error("配置文件不存在：%s", path)
+        log.error("先复制模板再填：cp config.example.yaml config.yaml")
+        log.error("如果配置文件已经放在宿主机，检查挂载路径是不是挂成了目录。")
+        raise SystemExit(2)
+    if os.path.isdir(path):
+        log.error("配置路径是个目录而不是文件：%s", path)
+        log.error("多半是宿主机上那个文件不存在，docker 自动建了同名目录。")
+        raise SystemExit(2)
     with open(path, encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
     return deep_merge(DEFAULT_CFG, raw)
@@ -2437,7 +2445,7 @@ class Steward:
 # ----------------------------------------------------------------------------
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--config", default=os.path.join(BASE, "keke-config.yaml"))
+    ap.add_argument("--config", default=os.path.join(BASE, "config.yaml"))
     ap.add_argument("--dry-run", action="store_true", help="只判定不播报")
     ap.add_argument("--test-pull", action="store_true", help="拉一次对话记录并打印")
     ap.add_argument("--test-ask", metavar="Q", help="走完整链路（抓帧+模型），不播报")

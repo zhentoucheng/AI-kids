@@ -9,7 +9,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY keke.py .
-COPY config.example.yaml .
+COPY config.example.yaml ./config.yaml
 
 # 记忆文件写在这里，记得挂卷持久化
 RUN mkdir -p /app/memory
