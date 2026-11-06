@@ -1,0 +1,45 @@
+# 家庭 AI 管家 · 两个容器
+#
+# 前置依赖（不在本文件里，需要你已经有）：
+#   1. Home Assistant  —— 提供播报出口和实体状态
+#   2. MQTT broker     —— 两台容器靠它互斥（谁在说话）
+#   3. go2rtc / Frigate —— 提供摄像头抓帧和人数统计
+#
+# 用法：
+#   cp keke/config.example.yaml keke/config.yaml
+#   cp kaoguan/config.example.yaml kaoguan/config.yaml
+#   （改完里面标 ★ 的项）docker compose up -d
+
+services:
+  keke:
+    build: ./keke
+    container_name: keke
+    restart: unless-stopped
+    volumes:
+      - ./keke/config.yaml:/app/config.yaml:ro
+      - ./keke/memory:/app/memory
+      # 小米云凭据，由你自己的同步方案产出（没有可留空，只是听不到音箱对话）
+      - ./secrets:/mi:ro
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  kaoguan:
+    build: ./kaoguan
+    container_name: kaoguan
+    restart: unless-stopped
+    volumes:
+      - ./kaoguan/config.yaml:/app/config.yaml:ro
+      - ./kaoguan/questions.yaml:/app/questions.yaml:ro
+      - ./kaoguan/words:/app/words:ro
+    environment:
+      - TZ=Asia/Shanghai
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

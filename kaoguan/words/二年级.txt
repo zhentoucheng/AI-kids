@@ -1,0 +1,9 @@
+# 二年级英语词表（示例）
+# 格式：一行一个词，`英文 中文`
+
+apple 苹果
+banana 香蕉
+orange 橙子
+tiger 老虎
+rabbit 兔子
+window 窗户

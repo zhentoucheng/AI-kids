@@ -1,0 +1,15 @@
+# 六年级英语词表（示例，替换成你自己的教材词表）
+# 格式：一行一个词，`英文 中文`，Tab / 逗号 / 空格分隔都行
+# 以 [ ] 开头的行当注释，用来分单元
+
+[Unit 1]
+panda 熊猫
+museum 博物馆
+interesting 有趣的
+travel 旅行
+
+[Unit 2]
+exercise 锻炼
+healthy 健康的
+vegetable 蔬菜
+delicious 美味的

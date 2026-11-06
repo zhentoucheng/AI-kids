@@ -1,0 +1,108 @@
+# 家庭小考官（kaoguan）· 配置模板
+# ─────────────────────────────────────────────────────────────
+# 用法：cp config.example.yaml config.yaml，按 ★ 逐项填。
+#
+# 它干的事很简单也很烦人：
+#   摄像头数到有人 → 坐够 40 秒 → 从年级词表里挑一个词
+#   → 先看图说孩子在干嘛 → 开口出题 → 念完自动报答案
+#
+# 硬约束：画面 0 人绝不出题。
+
+ha:
+  # ★ 你的 Home Assistant
+  url: "http://192.168.1.100:8123"
+  token: "≪HA_LONG_LIVED_TOKEN≫"
+  # ★ 播报实体（小爱接 HA 后生成）
+  tts_entity: "text.xiaomi_l05c_XXXX_play_text"
+  # ★ 门锁的两个实体：用来判断"谁回来了"和"避让进门播英语"
+  lock_key_id_entity: "sensor.lumi_wbmcn1_XXXX_lock_key_id"
+  lock_action_entity: "sensor.lumi_wbmcn1_XXXX_lock_action"
+
+mqtt:
+  # ★ 与 keke 同一个 broker
+  host: "192.168.1.100"
+  port: 1883
+  username: ""
+  password: ""
+  client_id: "kaoguan"          # 别和 keke 重名，会互相挤下线
+
+frigate:
+  # ★ 你的摄像头名（Frigate 里的 camera name）
+  camera: "camera1"
+  zone: "zone_center"
+  label: "person"
+  count_mode: "max"
+
+# 摄像头取帧，视觉出题用
+camera:
+  # ★ go2rtc 快照地址
+  snapshot_url: "http://192.168.1.100:1984/api/frame.jpeg?src=camera1&width=960"
+  timeout: 15
+
+# ── 大模型 ────────────────────────────────────────────────────
+# 任意 OpenAI 兼容接口。视觉出题需要模型支持图片输入。
+llm:
+  enabled: true
+  base_url: "http://192.168.1.1:31417/v1"
+  api_key: "≪YOUR_LLM_API_KEY≫"
+  models:
+    - "your-vision-model"
+  timeout: 60
+  max_tokens: 400
+  temperature: 0.9
+  word_hint_count: 60           # 喂给模型的候选词数量
+
+# 出题来源比例（%），剩下的归 questions.yaml 兜底
+# 视觉失败会自动落回词表路，保证"不定期出题"不中断
+quiz:
+  vision_ratio: 90
+  words_ratio: 10
+
+# 视觉出的词做本地查重：先退到近 N 天的记录，还空才全量放开
+dedup_fallback_days: 2
+
+# 单词题的例句（带时态），生成结果落盘缓存，同一个词只调一次模型
+sentence:
+  enabled: true
+  timeout: 25
+  max_tokens: 200
+  ask_kid_from_grade: 6         # 六年级及以上，题目里加"你也用它说一句"
+  cache_file: "sentence_cache.json"
+
+# 与门锁自动化的并行避让：门外一开锁，考官安静 N 分钟
+# 让"进门播英语 → 管家问候 → 孩子回话"走完再轮到出题
+lock_parallel:
+  arrival_quiet_minutes: 15
+  quiet_on_any_unlock: true
+
+# ── 孩子名单 ──────────────────────────────────────────────────
+# 名字就是点名时念的那个称呼，随便起。
+kids:
+  "姐姐": {grade: "六年级"}
+  "妹妹": {grade: "二年级"}
+kid_grade: {}
+kid_group: {}
+group_style:
+  "趣味": "plain"
+
+trigger:
+  min_persons: 1                # 画面里至少几个人才考虑出题
+  hold_seconds: 40              # 坐够多久。太短会追着路过的人出题
+  hold_grace_seconds: 20        # 掉线多久内不清零
+  require_kids_home: 0
+  random_delay_max: 30          # 达标后随机延迟，避免"每次都卡在同一秒"
+  answer_delay_seconds: 15      # 报答案 = 念题估算时长 + 这个值
+
+window:
+  after: "09:00:00"
+  before: "20:30:00"
+  # 吃饭恰恰是最该出题的时候，所以不设午/晚饭静音
+  mute: []
+
+limits:
+  max_per_day: 30               # 太小会中午就烧完，下午一道题都没有
+  min_gap_minutes: 30
+
+state_file: "state.json"
+questions_file: "questions.yaml"
+words_dir: "words"

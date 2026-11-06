@@ -1,0 +1,17 @@
+# 兜底题库。只有「看图出题」和「年级词表抽词」两路都拿不到素材时才会用到，
+# 占比很低（~10%），但它是保证"绝不空手"的最后一层。
+#
+# 结构：{年级: [{q: 题目, a: 答案, hint: 可选提示}]}
+
+六年级:
+  - q: "What is the past tense of 'go'?"
+    a: "went。G-O-Went，go 的过去式是 went。"
+  - q: "用英语说：我昨天去了公园。"
+    a: "I went to the park yesterday."
+    hint: "注意时态用过去式"
+
+二年级:
+  - q: "What color is the sky on a sunny day?"
+    a: "Blue。B-L-U-E，晴天的时候天是蓝色的。"
+  - q: "What is 3 plus 4?"
+    a: "Seven。Three plus four is seven。"

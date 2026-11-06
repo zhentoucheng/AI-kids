@@ -1,0 +1,20 @@
+# 密钥与个人配置 —— 永远不要提交
+config.yaml
+**/config.yaml
+.mi.token
+mi-device.json
+sentence_cache.json
+state.json
+
+# 运行时产物
+memory/
+*.jsonl
+*.log
+__pycache__/
+*.py[cod]
+
+# 系统
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
